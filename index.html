@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emojico</title>
+    <link rel="icon" type="image/x-icon" href="menutesting/images/boss-icon.png">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div class="hamburger-menu">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <!-- Hamburger Icon -->
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="/" target="_blank">Home</a>
+            <a href="login/account.php">Dashboard</a>
+            <a href="discover.php">Explore</a>
+        </div>
+    </div>
+
+    <a href="changelog">
+        <img src="menutesting/images/changelog.png" alt="Changelog Icon" class="changelog-icon">
+    </a>
+
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+
+    <div class="bubble-container"></div>
+
+    <img src="menutesting/images/settings.png" alt="Settings Icon" class="settings-icon" onclick="toggleSettingsMenu()">
+
+    <div class="menu-container">
+        <img src="menutesting/emoji/ops-icon.png" alt="Site Logo">
+        <h1 class="menu-title">emojico</h1>
+        <div class="channel-grid">
+            <!-- Channel Boxes -->
+            <a href="emojicrush" tabindex="1">
+                <div class="channel" tabindex="1">
+                    <img src="menutesting/images/emoji_crush5.png" alt="emoji_crush5">
+                    <img src="menutesting/images/copy_3055AD35-F7E8-47BC-B270-7DD7061BA16B.gif" alt="Emoji Crush Gif" class="hover-image">
+                </div>
+            </a>
+
+            <a href="emojicreator" tabindex="2">
+                <div class="channel" tabindex="2">
+                    <img src="menutesting/images/emoji_creator3.png" alt="emoji_creator3">
+                    <img src="menutesting/images/emojigif.gif" alt="Emoji Creator Gif" class="hover-image2">
+                </div>
+            </a>
+
+            <a href="emoji-slots" tabindex="3">
+                <div class="channel" tabindex="3">
+                    <img src="images/slots.png" alt="discord">
+                    <img src="images/slotsgif.gif" alt="Slots Gif" class="hover-image3">
+                </div>
+            </a>
+
+            <a href="https://discord.gg/walterwhite" tabindex="4">
+                <div class="channel" tabindex="4">
+                    <img src="menutesting/images/discord5.png" alt="trophy">
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+    <div class="scoreboard">
+        Score: <span id="score">0</span>
+    </div>
+
+    <div class="settings-popup" id="settingsMenu">
+        <label>
+            <input type="checkbox" onclick="toggleBubbles()"> Toggle Bubbles Game
+        </label>
+    </div>
+    <a href="login" target="_blank" class="signup-button" aria-label="Sign up"></a>
+</body>
+<script>
+  const bubbleImages = [
+    'angry', 'hell-boy', 'rap', 'what', 'waaaht', 'too-sad', 'tire', 'sweet-kiss',
+    'sweat', 'surrender', 'sure', 'still-dreaming', 'spiderman', 'smile', 'shame',
+    'sexy-girl', 'sad', 'pudency', 'oh', 'nosebleed', 'misdoubt', 'look-down',
+    'hungry', 'haha', 'feel-good', 'extreme-sexy-girl', 'embarrassed', 'cry',
+    'cool', 'confuse', 'confident', 'cold', 'canny', 'byebye', 'burn-joss-stick',
+    'boss', 'big-smile', 'beauty', 'beated', 'beat-plaster', 'baffle', 'bad-smelly',
+    'amazed', 'ah', 'after-boom', 'adore', 'choler', 'ops', 'matrix'
+  ];
+
+  const maxBubbles = 45;
+  let score = 0;
+  let bubbleInterval;
+  let bubblesEnabled = true;
+
+  function createBubble() {
+    const bubbleContainer = document.querySelector('.bubble-container');
+    const existingBubbles = document.querySelectorAll('.bubble');
+
+    if (existingBubbles.length < maxBubbles) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+
+      bubble.style.left = Math.random() * 100 + 'vw';
+      bubble.style.animationDuration = 10 + Math.random() * 10 + 's';
+      bubble.style.animationDelay = Math.random() * 3 + 's';
+
+      const randomImage = bubbleImages[Math.floor(Math.random() * bubbleImages.length)];
+      bubble.style.backgroundImage = `url('menutesting/emoji/${randomImage}-icon.png')`;
+
+      bubble.addEventListener('click', function () {
+        bubble.style.animation = 'pop 0.3s forwards';
+        bubble.addEventListener('animationend', () => {
+          bubble.remove();
+          score++; // Increment the score when a bubble is popped
+          document.getElementById('score').textContent = score; // Update the score
+          document.querySelector('.scoreboard').style.display = 'block'; // Show scoreboard
+        });
+      });
+
+      bubbleContainer.appendChild(bubble);
+
+      bubble.addEventListener('animationend', () => {
+        bubble.remove();
+      });
+    }
+  }
+
+  // Start creating bubbles at intervals
+  function createBubbles() {
+    bubbleInterval = setInterval(createBubble, 5000); // Create a bubble every 5 seconds
+  }
+
+  // Stop creating bubbles
+  function stopBubbles() {
+    clearInterval(bubbleInterval);
+  }
+
+  // Call createBubbles when bubbles are enabled
+  if (bubblesEnabled) {
+    createBubbles();
+  }
+
+  function toggleSettingsMenu() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    settingsMenu.style.display = (settingsMenu.style.display === 'none' || settingsMenu.style.display === '') ? 'block' : 'none';
+  }
+
+  // Close settings menu if clicked outside
+  document.addEventListener('click', function(event) {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const settingsIcon = document.querySelector('.settings-icon');
+
+    if (settingsMenu.style.display === 'block' && 
+        !settingsMenu.contains(event.target) && 
+        !settingsIcon.contains(event.target)) {
+      settingsMenu.style.display = 'none';
+    }
+  });
+
+  function toggleBubbles() {
+    bubblesEnabled = !bubblesEnabled;
+    if (bubblesEnabled) {
+      // Enable bubbles and restart the interval
+      createBubbles();
+    } else {
+      // Disable bubbles and stop creating new ones
+      stopBubbles();
+      document.querySelectorAll('.bubble').forEach(bubble => bubble.remove()); // Remove existing bubbles
+    }
+  }
+
+  function toggleMenu() {
+    const menu = document.getElementById('dropdownMenu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Close menu when clicking outside of it
+  document.addEventListener('click', function(event) {
+    const menu = document.getElementById('dropdownMenu');
+    const icon = document.querySelector('.menu-icon');
+    if (!menu.contains(event.target) && !icon.contains(event.target)) {
+      menu.style.display = 'none';
+    }
+  });
+
+</script>
+
+</html>
